@@ -1,0 +1,36 @@
+@{title('Data')}
+
+<div id='dbForm'>
+	<h1>Database</h1>
+
+	<form action="/data" method='POST'>
+		
+	<table>
+		<tr>
+			<td><label for="name">artist name: </label></td>
+			<td><input name='artist name' type="text" placeholder="artist name"></td>			
+		</tr>
+		<tr>
+			<td><label for="name">product name: </label></td>
+			<td><input name='product name' type="text" placeholder="product name"></td>
+		</tr>
+		<tr>
+			<td><label for="name">price: </label></td>
+			<td><input name='price' type="text" placeholder="price"></td>
+		</tr>
+		<tr>
+			<td><label for="name">description: </label></td>
+			<td><input name='description' type="text" placeholder="description"></td>		
+		</tr>
+	</table>
+
+		<input type="submit" value="Add Product">
+
+	</form>
+
+	<hr>
+
+	<div id="dataList">
+		
+	</div>
+</div>

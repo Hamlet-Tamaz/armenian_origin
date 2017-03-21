@@ -1,0 +1,37 @@
+@{title('Edit Producer')}
+
+
+<div id='editProducer'>
+	<h1>Edit Producer</h1>
+
+	<form action="/producers/@{model.id}/edit" method='POST'>
+	<table>
+		<tr style="margin-bottom: 10px">
+			<td><label for="name">name: </label></td>
+			<td><input name='name' type="text" value='@{model.name}' placeholder="name"></td>			
+		</tr>
+		<tr>
+			<td><label for="img_url">Img Url:</label></td>
+			<td>
+				<input type="text" name='img_url' value='@{model.img_url}' placeholder="img_url">
+			</td>
+		</tr>
+		<tr>
+			<td><label for="bio">bio: </label></td>
+			<td>
+				<textarea name='bio' type="textArea" cols="40" rows="5" placeholder="bio">@{model.bio}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="description">description: </label></td>
+			<td>
+				<textarea name='description' type="textArea" cols="40" rows="5" placeholder="description">@{model.description}</textarea>
+			</td>
+		</tr>
+	</table>
+	<br>
+
+		<input class='btn' type="submit" value="Submit Changes">
+
+	</form>
+</div>

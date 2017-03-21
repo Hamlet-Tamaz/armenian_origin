@@ -1,0 +1,76 @@
+@{title('Something awesome')}
+@{head('/j/producer.js')}
+<!-- @{model.message} -->
+
+<hr />
+<br />
+<p class="center">
+	Producer <br />
+	<b>Create something awesome.</b>
+</p>
+<br />
+<div id='producerProfile'>
+	
+
+	<div class='row'>
+		<!-- <div class='col-xs-1'>ID: @{model.data[0].id}</div> -->
+		<div class='col-xs-4'>Image: 
+			<h1>@{model.data[0].c_id}</h1>
+			@{if model.data[0].c_img_url}
+				<img src="@{model.data[0].c_img_url}" alt="">
+			@{else}
+				<img src="https://s-media-cache-ak0.pinimg.com/736x/8b/46/37/8b46376b12a5639eaa8cf2c9ba848c80.jpg" alt="">
+			@{fi}
+				@{model.data[0].c_img_ur}
+		</div>
+		<div class='col-xs-5 col-xs-offset-1'>
+			<div class='row'>
+				<h3> Name: @{model.data[0].name}</h3>
+			</div>
+			<div class="row" id='profileBio'>
+				<h4>Bio</h4>
+				<p>
+					@{model.data[0].bio}
+					<br>
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit aut exercitationem illo, odio cum soluta a officia eos quae sint blanditiis quod alias labore officiis fugit sapiente sequi, aperiam quis!
+				</p>
+			</div>
+			
+			<div class="row">
+				<button class="btn">Chapter 2</button>
+			</div>
+
+		</div>
+	</div>
+	
+
+	<br />
+	<hr>		
+
+	<div class="row products container-fluid" >			
+		<h2>Here are some of @{model.data[0].name}'s items...</h2>
+		@{if model.data[0].producer_id}
+			@{foreach p in model.data}
+				<div class='col-xs-3'>
+					<img src="/i/img_temp_bird.png" alt="">
+					<div class="row">
+						<h3 class='col-xs-1'>@{p.id}</h3>
+						<p class='col-xs-10'>@{p.description}:  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae harum sunt blanditiis veritatis, quaerat laborum voluptate labore ducimus, accusamus iste a laboriosam modi! Laudantium animi deleniti pariatur adipisci fuga ab.</p>
+						
+					</div>
+					
+
+					
+					<div class="row productsPrice" >
+						<h3>$@{p.price}</h3>
+					</div>
+
+				</div>
+			@{end}
+		@{else}
+			<p class='errorMsg'>@{model.message}</p>
+		@{fi}
+		<!-- @{if !model.success} -->
+	</div>
+
+</div>

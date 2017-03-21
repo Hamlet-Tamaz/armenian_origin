@@ -1,0 +1,122 @@
+@{title('Data')}
+@{head('/j/users.js')}
+
+
+<div id='addUser'>
+	<h1>Users</h1>
+
+	<form action="/users" method='POST'>
+		
+	<table>
+		<tr>
+			<td><label for="first_name">first name: </label></td>
+			<td><input name='first_name' type="text" placeholder="first name"></td>			
+		</tr>
+		<tr>
+			<td><label for="last_name">last name: </label></td>
+			<td><input name='last_name' type="text" placeholder="last name"></td>			
+		</tr>
+		<tr>
+			<td><label for="role">role: </label></td>
+			<td><input name='role' type="text" placeholder="role"></td>
+		</tr>
+	</table>
+
+		<input type="submit" value="Add User">
+
+	</form>
+
+	<hr>
+
+	<h2>User List</h2>	
+
+	<div id="userList">
+		<div class="row">
+			<div class='col-xs-10'>
+				<h3 class="col-xs-3">ID</h3>
+				<h3 class="col-xs-3">First Name</h3>
+				<h3 class="col-xs-3">Last Name</h3>
+				<h3 class="col-xs-3">Role</h3>
+			</div>
+		</div>
+
+		<hr>
+
+		@{foreach u in model}
+			<div class="row">
+				<a href="#" class='col-xs-10'>
+					<div class="col-xs-3 producerID">
+						<h5>@{u.id}</h5>
+					</div>
+					<div class="col-xs-3 producerFirstName">
+						<h5>@{u.first_name}</h5>
+					</div>	
+					<div class="col-xs-3 producerLastName">
+						<h5>@{u.last_name}</h5>
+					</div>	
+					<div class="col-xs-3 producerRole">
+						<h5>@{u.role}</h5>
+					</div>	
+				</a>
+				<div class="col-xs-2">
+					
+					<!-- <form action="/producers/@{u.id}/edit" method='get'>
+					</form> -->
+
+					<button type="button" class="btn btn-info col-xs-6 editBtn">Edit</button>
+
+					<form action="/users/@{u.id}/delete" method='post'>
+						<button class="btn btn-danger col-xs-5 col-xs-offset-1">X</button>
+					</form>
+				</div>
+			</div>
+		@{end}
+	</div>
+</div>
+
+
+
+<div id="editUser">
+	<div data-show="false" id='editModal' class="modal fade" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">Modal title</h4>
+	      </div>
+	      <div class="modal-body">
+	        
+				<form action="/users/edit" method='POST'>
+			
+					<input name='id' type="hidden">
+					
+					<table>
+						<tr>
+							<td><label for="first_name">first name: </label></td>
+							<td><input name='first_name' type="text" placeholder="first name"></td>			
+						</tr>
+						<tr>
+							<td><label for="last_name">last name: </label></td>
+							<td><input name='last_name' type="text" placeholder="last name"></td>			
+						</tr>
+						<tr>
+							<td><label for="role">role: </label></td>
+							<td><input name='role' type="text" placeholder="role"></td>
+						</tr>
+					</table>
+
+						<!-- <input type="submit" value="Add User"> -->
+
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <!-- <form action="" method='POST'> -->
+			        	<button type="submit" class="btn btn-primary">Save changes</button>
+			        <!-- </form> -->
+			      </div>
+				</form>
+
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</div>
