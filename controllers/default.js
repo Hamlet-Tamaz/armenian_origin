@@ -22,7 +22,7 @@ exports.install = function() {
 	
 	F.route('/products', view_products, ['get']);
 	F.route('/products/query/{category}', get_products, ['get']);
-	F.route('/products', post_products, ['post']);
+	F.route('/products', post_products, ['post', 'upload'], 5000);
 	F.route('/products/{id}', view_product, ['get']);
 	F.route('/products/{id}/edit', edit_product, ['get']);
 	F.route('/products/{id}/edit', post_edit_product, ['post']);
@@ -293,12 +293,22 @@ function post_producers() {
 
 	DB('ao', function(err,client, done) {
 
+		fs.rename(img.path, 'public/u/producer_img/temp', function(err) {
+			if (err) return console.error(err)
+			console.log('file uploaded!')
+		})
 
 		client.query('INSERT INTO producers (name, bio) VALUES ($1, $2) RETURNING id;', [formData.name, formData.bio], function(err,result) {
 				done();
 			
 
 			var id = result.rows[0].id
+
+			fs.rename('public/u/producer_img/temp', 'public/u/producer_img/'+id+'.png', function(err) {
+				if (err) return console.error(err)
+
+				console.log('file uploaded!')
+			})
 
 		// eval(locus)
 				if(err != null) {
@@ -307,10 +317,6 @@ function post_producers() {
 				}
 				else {
 
-					fs.rename(img.path, 'public/u/producer_img/'+id+'.png', function(err) {
-						if (err) return console.error(err)
-						console.log('file uploaded!')
-					})
 
 					self.redirect('/producers');
 				}
@@ -470,7 +476,11 @@ function view_products() {
 
 function view_product() {
 	var self = this,
-		id = self.req.path[1];
+		id = self.req.path[1],
+		response = {
+			success: false,
+			message: ''
+		};
 
 	DB('ao', function(err, client, done) {
 		client.query('SELECT * FROM products WHERE id=' + id, function(err, result) {
@@ -481,40 +491,55 @@ function view_product() {
 				return;
 			}
 			else {
+				var pid = result.rows[0].producer_id;
+				
 				console.log('result: ', result.rows[0])
-				response.c_data = result.rows;
-				// self.view('product', result.rows[0])
+				response.p_data = result.rows[0];
+
+				client.query("SELECT * FROM producers WHERE id=" + pid, function(err, result) {
+					// done();
+
+					if(err != null) {
+						self.throw500(err);
+						return;
+					}
+					else if(result.rows[0].id > 0) {
+						response.success = true;
+						response.message = '';
+						response.c_data = result.rows[0];
+						
+						client.query('SELECT * FROM products WHERE producer_id=' + pid, function(err, result) {
+							done();
+
+							if(err != null) {
+								self.throw500(err);
+								return;
+							}
+							else {
+								response.o_data = result.rows;
+
+								console.log('producer search: ', result.rows)
+								console.log('response: ', response)
+								self.view('product', response)								
+							}
+						})					
+					}
+				});
+
 			}
 		})
 
 		//possibly also add other work by this producer !!!!!!!!!!
 
-		client.query("SELECT * FROM producers WHERE ptoducer_id=" + id, function(err, result) {
-				done();
-
-				if(err != null) {
-					self.throw500(err);
-					return;
-				}
-				else if(result.rows[0].id > 0) {
-					response.success = true;
-					response.message = '';
-					response.c_data = result.rows;
-
-					console.log('producer search: ', result.rows)
-					console.log('response: ', response)
-					self.view('products', response)
-				}
-			});
 	})
 }
 
 function get_products() {
 	var self = this,
-		cat = self.req.path[2];
+		tag = self.req.path[2];
 
 	DB('ao', function(err, client, done) {
-		client.query("SELECT * FROM products WHERE categories LIKE '%" + cat + "%'", function(err, result) {
+		client.query("SELECT * FROM products WHERE categories LIKE '%" + tag + "%'", function(err, result) {
 			done();
 
 			if(err != null) {
@@ -523,7 +548,7 @@ function get_products() {
 			}
 			else {
 				// eval(locus)
-				console.log("!!!___!!!", cat, result)
+				console.log("!!!___!!!", tag, result)
 				self.json(result.rows)
 			}
 		});
@@ -534,45 +559,74 @@ function get_products() {
 function post_products() {
 	var self = this;
 	var formData = self.body,
+	imgs = self.files || '',
 	categories = '';
 
+	if(typeof(formData.categories) == 'string') {
+		formData.categories = [formData.categories];
+	}
 
+	// console.log('formData: ', formData, 'categories: ', formData['categories'], typeof(formData.categories))
+	
+//	SAVE IMAGES FROM TEMP TO PUBLIC
 
-	// formData['firstName'] - self.body['first name'];
-	// formData['lastName'] - self.body['last name'];
-	// formData['role'] - self.body['role'];
-
-
-	// console.log('formData: ', formData, 'categories: ', formData['categories'])
-
-	formData.categories.forEach(function(el, i) {
-		categories = categories + ' ' + el;
+	imgs.forEach(function(el, i) {
+		fs.rename(imgs[i].path, 'public/u/product_img/'+ formData.producer + '-' + i +'.png', function(err) {
+			if (err) return console.error(err)
+			console.log('file uploaded!')
+		})		
 	})
 
-	console.log('---!!!categories!!!---: ', categories)
-	
-	
-// eval(locus)
-
-
-
+//	INSERT PRODUCT
 	DB('ao', function(err,client, done) {
-		client.query('INSERT INTO products (name, producer_id, description, price, img_url, external_link, notes, categories) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', [formData.name, formData.producer, formData.description, formData.price, formData.img_url, formData.external_link, formData.notes, categories], function(err,result) {
-			done();
+		client.query('INSERT INTO products (name, producer_id, description, price, external_link, notes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id', [formData.name, formData.producer, formData.description, +formData.price, formData.external_link, formData.notes], function(err,result) {
 
 			if(err != null) {
 				self.throw500(err);
 				return;
 			}
 			else {
+				var id = result.rows[0].id,
+					q = 'INSERT INTO product_tag (product_id, tag_id) VALUES',
+					v = [],
+					count = 1,
+					tag;
 
-				console.log('posting user: ', result.rows[0])
-				self.redirect('/products');
+				formData.categories.forEach(function(el, i) {
+					// categories = categories + ' ' + el;
+					q = q + ' ($' + (count++) + ', $' + (count++) + '),';
+					
+					v.push(id);
+					v.push(el);
+				})
+
+				q = q.slice(0, -1) + ';';
+
+				console.log('q: ', q, 'v: ', v)
+
+
+
+
+//	INSERTING TAGS
+				client.query(q, v, function(err, result) {
+					done();
+
+					if(err != null) {
+						self.throw500(err);
+						return;
+					}
+					else {
+						console.log('posting user: ', result.rows[0])
+						self.redirect('/products');
+					}
+				})
 			}
 
 		})
 	})
 }
+
+
 
 function edit_product() {
 	var self = this,

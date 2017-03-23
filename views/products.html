@@ -5,7 +5,7 @@
 <div id='products'>
 	<h1>Products</h1>
 
-	<form id='postProduct' action="/products" method='POST'>
+	<form id='postProduct' action="/products" method='POST' enctype="multipart/form-data">
 		
 	<table>
 		<tr style="margin-bottom: 10px">
@@ -25,38 +25,38 @@
 		</tr>
 		<tr>
 			<td><label for="price">price: $</label></td>
-			<td><input name='price' type="text" value=''></td>
+			<td><input name='price' type="text"></td>
 		</tr>
 		<tr>
 			<td><label>categories:</label></td>
 			<td id='productCategories'>
 				<fieldset>				
 					<label for="wood">wood:</label>
-					<input name='categories' type="checkbox" value='wood'>
+					<input name='categories' type="checkbox" value='1'>
 
 					<label for="silver">silver:</label>
-					<input name='categories' type="checkbox" value='silver'>
+					<input name='categories' type="checkbox" value='2'>
 					
 					<label for="ceramics">ceramics:</label>
-					<input name='categories' type="checkbox" value='ceramics'>
+					<input name='categories' type="checkbox" value='3'>
 
 					<label for="painting">painting:</label>
-					<input name='categories' type="checkbox" value='painting'>
+					<input name='categories' type="checkbox" value='4'>
 
 					<label for="accessory">accessory:</label>
-					<input name='categories' type="checkbox" value='accessory'>
+					<input name='categories' type="checkbox" value='5'>
 
 					<label for="technology">technology:</label>
-					<input name='categories' type="checkbox" value='technology'>
+					<input name='categories' type="checkbox" value='6'>
 
 					<label for="hand-made">hand-made:</label>
-					<input name='categories' type="checkbox" value='hand-made'>
+					<input name='categories' type="checkbox" value='7'>
 
 					<label for="clothing">clothing:</label>
-					<input name='categories' type="checkbox" value='clothing'>
+					<input name='categories' type="checkbox" value='8'>
 
 					<label for="posters">posters:</label>
-					<input name='categories' type="checkbox" value='posters'>
+					<input name='categories' type="checkbox" value='9'>
 
 				</fieldset>
 			</td>
@@ -69,9 +69,7 @@
 		</tr>
 		<tr>
 			<td><label for="link">Img Url:</label></td>
-			<td>
-				<input type="text" name='img_url' placeholder="img_url">
-			</td>
+			<td><input class='btn' name='img_url' type="file" accept="file_extension|audio/*|video/*|image/*|media_type" multiple></td>
 		</tr>
 		<tr>
 			<td><label for="link">External Link:</label></td>
