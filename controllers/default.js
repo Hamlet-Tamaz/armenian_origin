@@ -493,7 +493,7 @@ function view_product() {
 			else {
 				var pid = result.rows[0].producer_id;
 				
-				console.log('result: ', result.rows[0])
+				// console.log('result: ', result.rows[0])
 				response.p_data = result.rows[0];
 
 				client.query("SELECT * FROM producers WHERE id=" + pid, function(err, result) {
@@ -518,7 +518,7 @@ function view_product() {
 							else {
 								response.o_data = result.rows;
 
-								console.log('producer search: ', result.rows)
+								// console.log('producer search: ', result.rows)
 								console.log('response: ', response)
 								self.view('product', response)								
 							}
@@ -560,10 +560,12 @@ function post_products() {
 	var self = this;
 	var formData = self.body,
 	imgs = self.files || '',
-	categories = '';
+	categories = '',
+	imgPaths = [];
 
-	if(typeof(formData.categories) == 'string') {
-		formData.categories = [formData.categories];
+	if( !formData.categories  ) {
+		// eval(locus)
+		formData.categories = [];
 	}
 
 	// console.log('formData: ', formData, 'categories: ', formData['categories'], typeof(formData.categories))
@@ -571,7 +573,12 @@ function post_products() {
 //	SAVE IMAGES FROM TEMP TO PUBLIC
 
 	imgs.forEach(function(el, i) {
-		fs.rename(imgs[i].path, 'public/u/product_img/'+ formData.producer + '-' + i +'.png', function(err) {
+
+		var newPath = 'public/u/product_img/'+ formData.producer + '-' + i +'.png';
+
+		imgPaths.push(newPath);
+
+		fs.rename(el.path, newPath, function(err) {
 			if (err) return console.error(err)
 			console.log('file uploaded!')
 		})		
@@ -586,11 +593,13 @@ function post_products() {
 				return;
 			}
 			else {
+//	INSERTING TAGS
 				var id = result.rows[0].id,
 					q = 'INSERT INTO product_tag (product_id, tag_id) VALUES',
 					v = [],
 					count = 1,
 					tag;
+
 
 				formData.categories.forEach(function(el, i) {
 					// categories = categories + ' ' + el;
@@ -602,12 +611,11 @@ function post_products() {
 
 				q = q.slice(0, -1) + ';';
 
+				if (v.length == 0)  q = ''; 
+
 				console.log('q: ', q, 'v: ', v)
 
 
-
-
-//	INSERTING TAGS
 				client.query(q, v, function(err, result) {
 					done();
 
@@ -616,8 +624,42 @@ function post_products() {
 						return;
 					}
 					else {
-						console.log('posting user: ', result.rows[0])
-						self.redirect('/products');
+						// eval(locus)
+	//	INSERTING IMAGES
+						var q = 'INSERT INTO images (owner, owner_id, img_path) VALUES',
+							v = [],
+							count = 1;
+
+
+						imgPaths.forEach(function(el, i) {
+							q = q + ' ($' + (count++) + ', $' + (count++) +', $' + (count++) + '),';
+							
+							v.push(2);
+							v.push(id);
+							v.push(el);
+
+						})
+
+						q = q.slice(0, -1) + ';';
+
+						console.log('2q: ', q, '2v: ', v)
+
+						if (v.length == 0) q = ''; 
+
+						client.query(q, v, function(err, result) {
+							done();
+							
+							if(err != null) {
+								self.throw500(err);
+								return;
+							}
+							else {
+								console.log('imgPaths: ', imgPaths)
+								// eval(locus);
+								self.redirect('/products');
+							}
+
+						})
 					}
 				})
 			}
