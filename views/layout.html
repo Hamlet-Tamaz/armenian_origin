@@ -47,7 +47,7 @@
 		</nav>
 		
 		<div class="container">
-			@{if model.msg}
+			@{if model && model.msg}
 				@{model.msg}
 			@{fi}
 

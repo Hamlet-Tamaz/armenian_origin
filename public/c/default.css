@@ -71,10 +71,6 @@ nav .navbar-left {
 	border-radius: 10px;
 }
 
-.products {
-	width: 90%;
-	margin: 0 auto;
-}
 
 
 .shopItem, #homeShop > .row:nth-child(0) > div{
@@ -95,10 +91,25 @@ nav .navbar-left {
 #homeShop div.btn-group button{
 	margin: 5px;
 }
+.products {
+	width: 80%;
+	margin: 0 auto;
+}
+.products > div{
+	/*margin: 8px;*/
+	border: solid white 20px;
+	min-width: 380px;
+}
 
 .products h3 {
 	margin-top: 5px;
 	margin-bottom: 0;
+}
+#products table td {
+	padding-bottom: 10px;
+}
+#products textarea,  #editProducts textarea {
+	text-align: left;
 }
 
 
@@ -114,12 +125,8 @@ nav .navbar-left {
 .productsPrice h3 {
 	color: white;
 }
-
-#products table td {
-	padding-bottom: 10px;
-}
-#products textarea,  #editProducts textarea {
-	text-align: left;
+#productList div.row {
+	padding-bottom: 5px;
 }
 
 #product img {

@@ -34,9 +34,10 @@ exports.install = function() {
 };
 
 function test() {
-self = this;
+	self = this;
+	// eval(locus)
 
-self.view('test');
+	self.view('test');
 }
 
 
@@ -243,7 +244,7 @@ function view_producers() {
 // console.log('here123')
 	
 	DB('ao', function(err, client, done) {
-		client.query('SELECT * FROM producers', function(err, result) {
+		client.query('SELECT * FROM producers ORDER BY id', function(err, result) {
 			done();
 
 			console.log('result!!: ', result.rows)
@@ -275,8 +276,6 @@ function get_producers() {
 			console.log('here!!!', result)
 			self.json(result)
 		});
-
-		// console.log('x: ', x)
 	})
 	
 }
@@ -338,9 +337,9 @@ function view_producer() {
 	}
 
 	DB('ao', function(err, client, done) {
-		client.query('SELECT p.id AS id, p.name AS name, p.producer_id, p.description, p.price, p.img_url AS item_pic, c.id AS c_id, c.name AS c_name, c.img AS c_img, c.bio FROM products p FULL OUTER JOIN producers c ON p.producer_id = c.id WHERE c.id =' + pid +'ORDER BY p.id', function(err, result) {
+		client.query('SELECT p.id AS id, p.name AS name, p.producer_id, p.description, p.price, c.id AS c_id, c.name AS c_name, c.img AS c_img, c.bio FROM products p FULL OUTER JOIN producers c ON p.producer_id = c.id WHERE c.id =' + pid +'ORDER BY p.id', function(err, result) {
 				done();
-				
+// eval(locus)
 console.log('here: ', result.rows[0].id)
 				if(err != null) {
 					self.throw500(err);
@@ -389,7 +388,7 @@ var self = this,
 	 formData = self.body;
 
 	DB('ao', function(err, client, done) {
-		client.query('UPDATE producers SET name=$1, img_url=$2, bio=$3 WHERE id=' + id, [formData.name, formData.img_url, formData.bio],function(err, result) {
+		client.query('UPDATE producers SET name=$1, bio=$2 WHERE id=' + id, [formData.name, formData.bio],function(err, result) {
 			done();
 			
 			if (err != null) {
@@ -433,7 +432,7 @@ function view_products() {
 	
 	DB('ao', function(err, client, done) {
 
-		client.query("SELECT * FROM products ORDER BY id", function(err, result) {
+		client.query("SELECT * FROM products ORDER BY id DESC LIMIT 10", function(err, result) {
 
 			if(err != null) {
 				self.throw500(err);
@@ -496,9 +495,9 @@ function view_product() {
 				// console.log('result: ', result.rows[0])
 				response.p_data = result.rows[0];
 
+eval(locus)
 				client.query("SELECT * FROM producers WHERE id=" + pid, function(err, result) {
 					// done();
-
 					if(err != null) {
 						self.throw500(err);
 						return;
@@ -539,7 +538,7 @@ function get_products() {
 		tag = self.req.path[2];
 
 	DB('ao', function(err, client, done) {
-		client.query("SELECT * FROM products WHERE categories LIKE '%" + tag + "%'", function(err, result) {
+		client.query("SELECT * FROM products WHERE tags LIKE '%" + tag + "%'", function(err, result) {
 			done();
 
 			if(err != null) {
@@ -556,25 +555,33 @@ function get_products() {
 	
 }
 
+// function post_products() {
+// 	var self = this;
+
+// 	eval(locus)
+// }
+
 function post_products() {
-	var self = this;
-	var formData = self.body,
+	var self = this,
+	formData = self.body,
 	imgs = self.files || '',
-	categories = '',
+	tags = '',
 	imgPaths = [];
 
-	if( !formData.categories  ) {
-		// eval(locus)
-		formData.categories = [];
+	if( !formData.tags  ) {
+		formData.tags = [];
 	}
-
-	// console.log('formData: ', formData, 'categories: ', formData['categories'], typeof(formData.categories))
+	else if(formData.tags.length == 1) {
+		formData.tags = [formData.tags];
+	}
+	else {
+		formData.tags = formData.tags.split(' ');
+	}
+	// console.log('formData: ', formData, 'tags: ', formData['tags'], typeof(formData.tags))
 	
 //	SAVE IMAGES FROM TEMP TO PUBLIC
-
 	imgs.forEach(function(el, i) {
-
-		var newPath = 'public/u/product_img/'+ formData.producer + '-' + i +'.png';
+		var newPath = 'public/u/product_img/'+ i +'.png';
 
 		imgPaths.push(newPath);
 
@@ -583,40 +590,62 @@ function post_products() {
 			console.log('file uploaded!')
 		})		
 	})
-
 //	INSERT PRODUCT
 	DB('ao', function(err,client, done) {
-		client.query('INSERT INTO products (name, producer_id, description, price, external_link, notes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id', [formData.name, formData.producer, formData.description, +formData.price, formData.external_link, formData.notes], function(err,result) {
+		client.query('INSERT INTO products (name, producer_id, description, price, external_link, notes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [formData.name, +formData.producer, formData.description, +formData.price, formData.external_link, formData.notes], function(err,result) {
+
+
+console.log('typeof: ', typeof(formData.name), typeof(+formData.producer), typeof(formData.description), typeof(+formData.price), typeof(formData.external_link), typeof(formData.notes))
+console.log('data: ', formData.name, +formData.producer, formData.description, +formData.price, formData.external_link, formData.notes)
+console.log('result: ', result.rows)
+console.log('tags: ', typeof(formData.tags), formData.tags)
+
 
 			if(err != null) {
+				console.log('--- In 500 error ---')
 				self.throw500(err);
 				return;
 			}
 			else {
-//	INSERTING TAGS
+				console.log('--- In success ---')
+
 				var id = result.rows[0].id,
+					model = result.rows[0],
 					q = 'INSERT INTO product_tag (product_id, tag_id) VALUES',
 					v = [],
 					count = 1,
 					tag;
 
 
-				formData.categories.forEach(function(el, i) {
-					// categories = categories + ' ' + el;
-					q = q + ' ($' + (count++) + ', $' + (count++) + '),';
-					
-					v.push(id);
-					v.push(el);
+// SAVE IMAGES FROM TEMP NAME TO NAME WITH 'ID' 
+				imgPaths.forEach(function(el, i) {
+					var pathWithPID = 'public/u/product_img/'+ id + '-' +i +'.png';;
+
+					fs.rename(el, pathWithPID, function(err) {
+						if (err) return console.error(err)
+						console.log('file uploaded!')
+					})
 				})
 
-				q = q.slice(0, -1) + ';';
 
-				if (v.length == 0)  q = ''; 
+//	INSERTING TAGS
+console.log('formData: ', formData )
 
-				console.log('q: ', q, 'v: ', v)
+				formData.tags.forEach(function(el, i) {
+					q = q + ' (' + id + ', ' + el + '),';
+				})
 
+				
+				if (formData.tags.length == 0)  {
+					q = ''; 
+				}
+				else {
+					q = q.slice(0, -1) + ';';
+				}
 
-				client.query(q, v, function(err, result) {
+				console.log('q: ', q)
+
+				client.query(q, function(err, result) {
 					done();
 
 					if(err != null) {
@@ -624,42 +653,7 @@ function post_products() {
 						return;
 					}
 					else {
-						// eval(locus)
-	//	INSERTING IMAGES
-						var q = 'INSERT INTO images (owner, owner_id, img_path) VALUES',
-							v = [],
-							count = 1;
-
-
-						imgPaths.forEach(function(el, i) {
-							q = q + ' ($' + (count++) + ', $' + (count++) +', $' + (count++) + '),';
-							
-							v.push(2);
-							v.push(id);
-							v.push(el);
-
-						})
-
-						q = q.slice(0, -1) + ';';
-
-						console.log('2q: ', q, '2v: ', v)
-
-						if (v.length == 0) q = ''; 
-
-						client.query(q, v, function(err, result) {
-							done();
-							
-							if(err != null) {
-								self.throw500(err);
-								return;
-							}
-							else {
-								console.log('imgPaths: ', imgPaths)
-								// eval(locus);
-								self.redirect('/products');
-							}
-
-						})
+						self.json(model, true);
 					}
 				})
 			}

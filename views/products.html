@@ -5,8 +5,10 @@
 <div id='products'>
 	<h1>Products</h1>
 
-	<form id='postProduct' action="/products" method='POST' enctype="multipart/form-data">
+	<form id='postProductForm' action='#' enctype="multipart/form-data">
 		
+	<h3 class="errorMsg"></h3>
+
 	<table>
 		<tr style="margin-bottom: 10px">
 			<td><label for="product_name">product name: </label></td>
@@ -16,7 +18,7 @@
 			<td><label for="producer">producer: </label></td>
 			<td>
 				<select name="producer" id="">
-					<option value="1">--</option>
+					<option value="0">--</option>
 					@{foreach p in model.c_data}
 						<option value="@{p.id}">@{p.name}</option>
 					@{end}
@@ -28,35 +30,35 @@
 			<td><input name='price' type="text"></td>
 		</tr>
 		<tr>
-			<td><label>categories:</label></td>
-			<td id='productCategories'>
+			<td><label>tags:</label></td>
+			<td id='productTags'>
 				<fieldset>				
 					<label for="wood">wood:</label>
-					<input name='categories' type="checkbox" value='1'>
+					<input name='tags' type="checkbox" value='1'>
 
 					<label for="silver">silver:</label>
-					<input name='categories' type="checkbox" value='2'>
+					<input name='tags' type="checkbox" value='2'>
 					
 					<label for="ceramics">ceramics:</label>
-					<input name='categories' type="checkbox" value='3'>
+					<input name='tags' type="checkbox" value='3'>
 
 					<label for="painting">painting:</label>
-					<input name='categories' type="checkbox" value='4'>
+					<input name='tags' type="checkbox" value='4'>
 
 					<label for="accessory">accessory:</label>
-					<input name='categories' type="checkbox" value='5'>
+					<input name='tags' type="checkbox" value='5'>
 
 					<label for="technology">technology:</label>
-					<input name='categories' type="checkbox" value='6'>
+					<input name='tags' type="checkbox" value='6'>
 
 					<label for="hand-made">hand-made:</label>
-					<input name='categories' type="checkbox" value='7'>
+					<input name='tags' type="checkbox" value='7'>
 
 					<label for="clothing">clothing:</label>
-					<input name='categories' type="checkbox" value='8'>
+					<input name='tags' type="checkbox" value='8'>
 
 					<label for="posters">posters:</label>
-					<input name='categories' type="checkbox" value='9'>
+					<input name='tags' type="checkbox" value='9'>
 
 				</fieldset>
 			</td>
@@ -83,40 +85,38 @@
 		</tr>
 	</table>
 	<br>
-
-		<input class='btn' type="submit" value="Add Product">
-
+		<input type="submit" value='input submit'>
 	</form>
 
 	<hr>
 
 	<h2>Product List</h2>	
 
-	<div id="productList">
-		<div class="row">
-			<div class='col-xs-10'>
-				<div class="col-xs-3">ID</div>
-				<div class="col-xs-3">Name</div>
-				<div class="col-xs-3">Producer</div>
-				<div class="col-xs-3">Price</div>
-			</div>
+	<div class="row">
+		<div class='col-xs-10'>
+			<div class="col-xs-3">ID</div>
+			<div class="col-xs-3">Name</div>
+			<div class="col-xs-3">Producer</div>
+			<div class="col-xs-3">Price</div>
 		</div>
+	</div>
 
-		<hr>
+	<hr>
 
+	<div id="productList">
 		@{foreach p in model.p_data}
 			<div class="row">
 				<a href="/products/@{p.id}" class='col-xs-10'>	
-					<div class="col-xs-3" class="productID">
+					<div class="col-xs-3 productID">
 						<h5>@{p.id}</h5>
 					</div>
-					<div class="col-xs-3" class="productName">
+					<div class="col-xs-3 productName">
 						<h5>@{p.name}</h5>
 					</div>	
-					<div class="col-xs-3" class="productProducer">
+					<div class="col-xs-3 productProducer">
 						<h5>@{p.producer_id}</h5>
 					</div>	
-					<div class="col-xs-3" class="productPrice">
+					<div class="col-xs-3 productPrice">
 						<h5>@{p.price}</h5>
 					</div>	
 				</a>

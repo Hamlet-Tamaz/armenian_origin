@@ -5,7 +5,9 @@
 <hr />
 <br />
 <p class="center">
-	Producer <br />
+	Producer Profile
+
+	<br />
 	<b>Create something awesome.</b>
 </p>
 <br />
@@ -16,12 +18,12 @@
 		<!-- <div class='col-xs-1'>ID: @{model.data[0].id}</div> -->
 		<div class='col-xs-4'>Image: 
 			<h1>@{model.data[0].c_id}</h1>
-			@{if model.data[0].c_img_url}
-				<img src="@{model.data[0].c_img_url}" alt="">
-			@{else}
+			<img src="/u/producer_img/@{model.data[0].c_id}.png" alt="">
+
+			<!-- @{if model.data[0].c_img_url}
 				<img src="https://s-media-cache-ak0.pinimg.com/736x/8b/46/37/8b46376b12a5639eaa8cf2c9ba848c80.jpg" alt="">
-			@{fi}
-				@{model.data[0].c_img_ur}
+			@{fi} -->
+				<!-- @{model.data[0].c_img_ur} -->
 		</div>
 		<div class='col-xs-5 col-xs-offset-1'>
 			<div class='row'>
