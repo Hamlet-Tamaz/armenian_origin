@@ -16,5 +16,4 @@ $(document).ready(function() {
 
 function imageIsLoaded(e) {
     $('#bioImg').attr('src', e.target.result);
-    debugger
 };

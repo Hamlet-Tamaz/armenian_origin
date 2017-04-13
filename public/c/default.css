@@ -31,9 +31,11 @@ nav {
 	text-decoration-line: none;
 	padding-top: 5px;
 	padding-right: 50px;
-
+	margin-bottom: 0;
 }
-
+.container {
+	padding-top: 0;
+}
 
 nav a {
 	color: white;
@@ -57,7 +59,7 @@ nav .navbar-left {
 	border:10px solid transparent;
 }
 
-#producerProfile img, #homeShop img {
+.products img, #homeShop img {
 	max-width: 200px;
 }
 
@@ -65,10 +67,23 @@ nav .navbar-left {
 	width: 50%;
 	min-width: 200px;
 }
-
+.producerImgs {
+	margin-top: 10px;
+	overflow-x: auto;
+	white-space: nowrap;
+	margin: 10px 0 0 10px;
+}
+.producerImgs > img {
+	max-height: 100px;
+	margin-left: 5px;
+	padding-left: 3px;
+}
 #bioImg {
-	width: 250px;
 	border-radius: 10px;
+
+	min-height: 200px;
+	min-width: 200px;
+	max-width: 60%
 }
 
 

@@ -5,8 +5,8 @@
 <div id='products'>
 	<h1>Products</h1>
 
-	<form id='postProductForm' action='#' enctype="multipart/form-data">
-		
+	<form id='postProductForm' action='/products' method='POST' enctype="multipart/form-data">
+
 	<h3 class="errorMsg"></h3>
 
 	<table>
@@ -33,45 +33,45 @@
 			<td><label>tags:</label></td>
 			<td id='productTags'>
 				<fieldset>				
-					<label for="wood">wood:</label>
-					<input name='tags' type="checkbox" value='1'>
+					<label for="woodTag">wood:</label>
+					<input id='woodTag' name='tags' type="checkbox" value='1'>
 
-					<label for="silver">silver:</label>
-					<input name='tags' type="checkbox" value='2'>
+					<label for="silverTag">silver:</label>
+					<input id='silverTag' name='tags' type="checkbox" value='2'>
 					
-					<label for="ceramics">ceramics:</label>
-					<input name='tags' type="checkbox" value='3'>
+					<label for="ceramicsTag">ceramics:</label>
+					<input id='ceramicsTag' name='tags' type="checkbox" value='3'>
 
-					<label for="painting">painting:</label>
-					<input name='tags' type="checkbox" value='4'>
+					<label for="paintingTag">painting:</label>
+					<input id='paintingTag' name='tags' type="checkbox" value='4'>
 
-					<label for="accessory">accessory:</label>
-					<input name='tags' type="checkbox" value='5'>
+					<label for="accessoryTag">accessory:</label>
+					<input id='accessoryTag' name='tags' type="checkbox" value='5'>
 
-					<label for="technology">technology:</label>
-					<input name='tags' type="checkbox" value='6'>
+					<label for="technologyTag">technology:</label>
+					<input id='technologyTag' name='tags' type="checkbox" value='6'>
 
-					<label for="hand-made">hand-made:</label>
-					<input name='tags' type="checkbox" value='7'>
+					<label for="hand-madeTag">hand-made:</label>
+					<input id='hand-madeTag' name='tags' type="checkbox" value='7'>
 
-					<label for="clothing">clothing:</label>
-					<input name='tags' type="checkbox" value='8'>
+					<label for="clothingTag">clothing:</label>
+					<input id='clothingTag' name='tags' type="checkbox" value='8'>
 
-					<label for="posters">posters:</label>
-					<input name='tags' type="checkbox" value='9'>
+					<label for="postersTag">posters:</label>
+					<input id='postersTag' name='tags' type="checkbox" value='9'>
 
 				</fieldset>
 			</td>
 		</tr>
 		<tr>
-			<td><label for="descrription">product descrription: </label></td>
+			<td><label for="descrription">product description: </label></td>
 			<td>
 				<textarea name='description' type="textArea" cols="40" rows="5" placeholder="product descrription"></textarea>
 			</td>
 		</tr>
 		<tr>
 			<td><label for="link">Img Url:</label></td>
-			<td><input class='btn' name='img_url' type="file" accept="file_extension|audio/*|video/*|image/*|media_type" multiple></td>
+			<td><input class='btn' name='images' type="file" accept="file_extension|audio/*|video/*|image/*|media_type" multiple></td>
 		</tr>
 		<tr>
 			<td><label for="link">External Link:</label></td>

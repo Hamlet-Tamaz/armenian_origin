@@ -1,1 +1,18 @@
+@{title('Test')}
+@{head('/j/test.js')}
+
 <h1>just a test</h1>
+
+
+<!-- <form id='testForm' enctype="multipart/form-data">
+	<input id='' type="file" accept="file_extension|audio/*|video/*|image/*|media_type" multiple='multiple'>
+	<input id='TFS' type="submit">
+	<button id='TFS'>upload</button>
+</form>
+ -->
+
+
+<form id='testForm2' action="/test" method='POST' enctype="multipart/form-data">
+	<input class='btn' name='images' type="file" accept="file_extension|audio/*|video/*|image/*|media_type" multiple>
+	<input type="submit">
+</form>

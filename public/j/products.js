@@ -34,16 +34,14 @@ $(document).ready(function() {
 	// });
 
 
-	$('#postProductForm').submit(function(e) {
-		e.preventDefault();
+	$('#trial').click(function(e) {
 
-		var $form = $(this);
+		var $form = $('#postProductForm');
 		var $inputs = $('#postProductForm :input');
 		var fields = ['name', 'producer', 'price', 'tags', 'description', 'external_link', 'notes' ];
 		var vals = {};
 		// var vals = fields.filter(function(key) { return $.contains(fields, key); })
 		
-
 
 
 
@@ -68,14 +66,15 @@ $(document).ready(function() {
 		if(!vals.name) showError('Please indicate the name of the product.');
 		// else if(!vals.producer) showError('Please select the producer of this product.');
 		// else if(!vals.price) showError('Please indicate the price of this product.');
-		else if(!vals.tags) showError('Please select the tags of this item.');
+		// else if(!vals.tags) showError('Please select the tags of this item.');
 		// else if(!vals.description) showError('Please provide a description for your product.');
 		else {
 			
-			// debugger
+
 			$.post('/products', vals, function(result) {	
 			
-				// debugger
+debugger
+
 				if(result.id > 0) {
 
 //	CLEAR OUT INPUT FIELDS
@@ -93,15 +92,15 @@ $(document).ready(function() {
 					// 	$f[0][i].innerHTML = '';	
 					// })
 	// 	SELECT/CHECKBOX FIELDS
-					var tags = $($f[0][3]).children();
+					var tags = $('input[type="checkbox"]');
 					
-					for(var i in tags) {
+					for(var i=0; i<tags.length; i++) {
 						if(tags[i].localName == 'input') {
-							debugger
 							tags[i].checked = false;
 						}
-						
 					}
+	//  DELETE ERROR MESSAGE
+					$('#products h3.errorMsg')[0].innerHTML = ''
 
 
 //	DYNAMICALLY ADD NEWLY POSTED PRODUCT
@@ -139,7 +138,7 @@ $(document).ready(function() {
 						)
 					)
 				}
-			})
+			}, 'json')
 		}
 	})
 	

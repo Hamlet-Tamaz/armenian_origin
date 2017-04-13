@@ -15,7 +15,7 @@ exports.install = function() {
 	F.route('/producers', view_producers, ['get']);
 	F.route('/producers/{id}', view_producer, ['get']);
 	F.route('/producers/{id}/edit', edit_producer, ['get']);
-	F.route('/producers/{id}/edit', post_edit_producer, ['post']);
+	F.route('/producers/{id}/edit', post_edit_producer, ['post', 'upload'], 5000);
 	F.route('/producersData', get_producers, ['get']);
 	F.route('/producers', post_producers, ['post', 'upload'], 5000);
 	F.route('/producers/{id}/delete', delete_producer, ['post']);
@@ -25,20 +25,44 @@ exports.install = function() {
 	F.route('/products', post_products, ['post', 'upload'], 5000);
 	F.route('/products/{id}', view_product, ['get']);
 	F.route('/products/{id}/edit', edit_product, ['get']);
-	F.route('/products/{id}/edit', post_edit_product, ['post']);
+	F.route('/products/{id}/edit', post_edit_product, ['post', 'upload'], 5000);
 	F.route('/products/{id}/delete', delete_product, ['post']);
 	
-	F.route('/test', test)
+	F.route('/test', test);
+	F.route('/test', test_post, ['post', 'upload'], 5000);
 
 
 };
 
 function test() {
-	self = this;
+	var self = this;
 	// eval(locus)
 
 	self.view('test');
 }
+
+function test_post() {
+	var self = this,
+	files = self.files;
+
+	console.log('files: ', files)
+
+	// eval(locus)
+
+	files.forEach(function(el, i) {
+		var newPath = 'public/u/producer_img/temp/' + 'temp_' + i + '.png' ;
+
+		fs.rename(el.path, newPath, function(err) {
+			if (err) return console.error(err)
+			console.log('file uploaded!')
+		})		
+	})
+
+
+	self.view('test');
+}
+
+
 
 
 function view_index() {
@@ -283,42 +307,60 @@ function get_producers() {
 function post_producers() {
 	var self = this,
 		formData = self.body,
-		img = self.files[0] || '';
+		imgs = self.files || [];
 
 	console.log('formData: ', formData)
-	console.log('img: ', img)
+	console.log('img: ', imgs)
 
 	
 
 	DB('ao', function(err,client, done) {
 
-		fs.rename(img.path, 'public/u/producer_img/temp', function(err) {
-			if (err) return console.error(err)
-			console.log('file uploaded!')
+// MOVE IMAGES TO TEMPORARY LOCATION
+		imgs.forEach(function(el, i) {
+			var newPath = 'public/u/producer_img/temp/' + i;
+
+			fs.rename(el.path, newPath, function(err) {
+				if (err) return console.error(err)
+				console.log('file uploaded!')
+			})		
 		})
 
-		client.query('INSERT INTO producers (name, bio) VALUES ($1, $2) RETURNING id;', [formData.name, formData.bio], function(err,result) {
+
+// INSERT ITEMS INTO DB
+		client.query('INSERT INTO producers (name, company_name, img_count, bio, goal, f_artists, zodiac, f_color, f_movie, f_book, f_season, f_music) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id;', [formData.name, formData.company, imgs.length, formData.bio, formData.goal, formData.f_artists, formData.zodiac, formData.f_color, formData.f_movie, formData.f_book, formData.f_season, formData.f_music], function(err,result) {
 				done();
 			
-
+// 	RETRIEVE ID'
+// eval(locus)
 			var id = result.rows[0].id
+			var dir = 'public/u/producer_img/' + id;
 
-			fs.rename('public/u/producer_img/temp', 'public/u/producer_img/'+id+'.png', function(err) {
-				if (err) return console.error(err)
-
-				console.log('file uploaded!')
+// MAKE NEW FOLDER FOR PRODUCER FOR IMAGES
+			fs.mkdir(dir, function(err) {
+				console.log('made directory: ', id)
+			})
+			
+// MOVE IMAGES TO PERMANENT LOCATION
+			imgs.forEach(function(el, i) {
+				var oldPath = 'public/u/producer_img/temp/' + i;
+				var newPath = 'public/u/producer_img/' + id + '/' + i + '.png';
+// eval(locus)
+				fs.rename(oldPath, newPath, function(err) {
+					if (err) return console.error(err)
+					console.log('file uploaded!')
+				})			
 			})
 
-		// eval(locus)
-				if(err != null) {
-					self.throw500(err);
-					return;
-				}
-				else {
+			if(err != null) {
+				self.throw500(err);
+				return;
+			}
+			else {
 
 
-					self.redirect('/producers');
-				}
+				self.redirect('/producers');
+			}
 		})
 	})
 }
@@ -337,9 +379,9 @@ function view_producer() {
 	}
 
 	DB('ao', function(err, client, done) {
-		client.query('SELECT p.id AS id, p.name AS name, p.producer_id, p.description, p.price, c.id AS c_id, c.name AS c_name, c.img AS c_img, c.bio FROM products p FULL OUTER JOIN producers c ON p.producer_id = c.id WHERE c.id =' + pid +'ORDER BY p.id', function(err, result) {
+		client.query('SELECT p.id AS id, p.name AS name, p.producer_id, p.description, p.price, c.id AS c_id, c.name AS c_name, c.img_count AS c_img_count, c.bio FROM products p FULL OUTER JOIN producers c ON p.producer_id = c.id WHERE c.id =' + pid +'ORDER BY p.id', function(err, result) {
 				done();
-// eval(locus)
+
 console.log('here: ', result.rows[0].id)
 				if(err != null) {
 					self.throw500(err);
@@ -365,7 +407,20 @@ console.log('here: ', result.rows[0].id)
 
 function edit_producer() {
 	var self = this,
-	 id = self.req.path[1];
+	 id = self.req.path[1],
+	 imgs = self.files || '';
+
+
+	imgs.forEach(function(el, i) {
+		// var oldPath = 'public/u/producer_img/temp/' + i;
+		var newPath = 'public/u/producer_img/' + id + '/' + i + '.png';
+
+		fs.rename(el.path, newPath, function(err) {
+			if (err) return console.error(err)
+			console.log('file uploaded!')
+		})			
+	})
+
 
 	DB('ao', function(err, client, done) {
 		client.query('SELECT * FROM producers WHERE id=' + id, function(err, result) {
@@ -492,10 +547,10 @@ function view_product() {
 			else {
 				var pid = result.rows[0].producer_id;
 				
-				// console.log('result: ', result.rows[0])
+				console.log('result: ', result.rows[0])
 				response.p_data = result.rows[0];
 
-eval(locus)
+// eval(locus)
 				client.query("SELECT * FROM producers WHERE id=" + pid, function(err, result) {
 					// done();
 					if(err != null) {
@@ -555,18 +610,15 @@ function get_products() {
 	
 }
 
-// function post_products() {
-// 	var self = this;
-
-// 	eval(locus)
-// }
 
 function post_products() {
 	var self = this,
 	formData = self.body,
-	imgs = self.files || '',
+	imgs = self.files || [],
 	tags = '',
 	imgPaths = [];
+
+// eval(locus)
 
 	if( !formData.tags  ) {
 		formData.tags = [];
@@ -578,10 +630,12 @@ function post_products() {
 		formData.tags = formData.tags.split(' ');
 	}
 	// console.log('formData: ', formData, 'tags: ', formData['tags'], typeof(formData.tags))
-	
+
+	console.log('imgs: ', imgs)
+
 //	SAVE IMAGES FROM TEMP TO PUBLIC
 	imgs.forEach(function(el, i) {
-		var newPath = 'public/u/product_img/'+ i +'.png';
+		var newPath = 'public/u/product_img/temp/'+ i +'.png';
 
 		imgPaths.push(newPath);
 
@@ -614,16 +668,22 @@ console.log('tags: ', typeof(formData.tags), formData.tags)
 					q = 'INSERT INTO product_tag (product_id, tag_id) VALUES',
 					v = [],
 					count = 1,
-					tag;
+					tag,
+					dir = 'public/u/product_img/' + id;
 
+console.log('id: ', id, 'imgs: ', imgs, imgPaths)
 
-// SAVE IMAGES FROM TEMP NAME TO NAME WITH 'ID' 
-				imgPaths.forEach(function(el, i) {
-					var pathWithPID = 'public/u/product_img/'+ id + '-' +i +'.png';;
-
-					fs.rename(el, pathWithPID, function(err) {
-						if (err) return console.error(err)
-						console.log('file uploaded!')
+//	MAKE A NEW FOLDER FOR FORDUCT IMAGES
+				fs.mkdir(dir, function(err) {
+					console.log('made directory: ', id)
+					
+	// SAVE IMAGES FROM TEMP NAME AND LOCATION TO NAME WITH 'ID' 
+					imgPaths.forEach(function(el, i) {
+						var newPath = 'public/u/product_img/'+ id + '/' +i +'.png';;
+						fs.rename(el, newPath, function(err) {
+							if (err) return console.error(err)
+							console.log('file uploaded!')
+						})
 					})
 				})
 

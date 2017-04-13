@@ -3,10 +3,69 @@
 
 <div id='editProducer'>
 	<h1>Edit Producer</h1>
+	
+	<form action="/producers/@{model.id}/edit" method='POST' enctype="multipart/form-data">
+				
+		<table>
+			<tr>
+				<td><label for="name">name: </label></td>
+				<td><input name='name' value='@{model.name}' type="text" placeholder="name"></td>			
+			</tr>
+			<tr>
+				<td><label for="name">company: </label></td>
+				<td><input name='company' value='@{model.company_name}' type="text" placeholder="company name"></td>			
+			</tr>
+			<tr>
+				<td><label for="img_url">choose img: </label></td>
+				<td><input class='btn' name='img_url' value='@{model.img_url}' type="file" accept="file_extension|audio/*|video/*|image/*|media_type" multiple></td>			
+			</tr>
+			<tr>
+				<td><label for="bio">bio: </label></td>
+				<td><textarea name="bio" cols="40" rows="5">@{model.bio}</textarea></td>			
+			</tr>
+			<tr>
+				<td><label for="name">goal: </label></td>
+				<td><input name='goal' value='@{model.goal}' type="text" placeholder="goal"></td>			
+			</tr>
+			<tr>
+				<td><label for="f_artists">favorite artists: </label></td>
+				<td><input name='f_artists' value='@{model.f_artists}' type="text" placeholder="favorite artists"></td>			
+			</tr>
+			<tr>
+				<td><label for="name">zodiac: </label></td>
+				<td><input name='zodiac' value='@{model.zodiac}' type="text" placeholder="zodiac"></td>			
+			</tr>
+			<tr>
+				<td><label for="f_color">favorite color: </label></td>
+				<td><input name='f_color' value='@{model.f_color}' type="text" placeholder="favorite color"></td>			
+			</tr>
+			<tr>
+				<td><label for="f_movie">favorite movie: </label></td>
+				<td><input name='f_movie' value='@{model.f_movie}' type="text" placeholder="favorite movie"></td>			
+			</tr>
+			<tr>
+				<td><label for="f_book">favorite book: </label></td>
+				<td><input name='f_book' value='@{model.f_book}' type="text" placeholder="favorite book"></td>			
+			</tr>
+			<tr>
+				<td><label for="f_season">favorite season: </label></td>
+				<td><input name='f_season' value='@{model.f_season}' type="text" placeholder="favorite season"></td>			
+			</tr>
+			<tr>
+				<td><label for="f_music">favorite music: </label></td>
+				<td><input name='f_music' value='@{model.f_music}' type="text" placeholder="favorite music"></td>			
+			</tr>
+		</table>
 
-	<form action="/producers/@{model.id}/edit" method='POST'>
+		<br>
+
+		<input class='btn' type="submit" value="Add Producer">
+
+	</form>
+
+<!-- 	<form action="/producers/@{model.id}/edit" method='POST'>
 	<table>
-		<tr style="margin-bottom: 10px">
+		<tr>
 			<td><label for="name">name: </label></td>
 			<td><input name='name' type="text" value='@{model.name}' placeholder="name"></td>			
 		</tr>
@@ -33,5 +92,5 @@
 
 		<input class='btn' type="submit" value="Submit Changes">
 
-	</form>
+	</form> -->
 </div>
