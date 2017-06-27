@@ -1,0 +1,28 @@
+{
+  "name": "armenian_origin",
+  "version": "1.0.0",
+  "description": "[![Support](https://www.totaljs.com/img/button-support.png)](https://www.totaljs.com/support/)",
+  "main": "debug.js",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1",
+    "locus": "^2.0.1",
+    "nosql": "^5.0.2",
+    "pg": "^6.4.0",
+    "total.js": "^2.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hamlet-Tamaz/armenian_origin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hamlet-Tamaz/armenian_origin/issues"
+  },
+  "homepage": "https://github.com/Hamlet-Tamaz/armenian_origin#readme"
+}
