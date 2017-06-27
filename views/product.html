@@ -2,13 +2,15 @@
 @{head('/j/product.js')}
 <div id="product">
 	<div class="row">
-		<h1>@{model.name}</h1>
+		<h1>Item Name: @{model.p_data.name}</h1>
+		<h2>By: @{model.c_data.name}</h2>
 	</div>
 	<div class="row">
 		<div class="col-xs-3 col-xs-offset-1">
-			<img src="/u/producer_img/@{model.c_data.id}.png" alt="">
+			<img src="/u/producer_img/@{model.c_data.id}/0.png" alt="">
 		</div>
 		<div class="col-xs-3 col-xs-offset-1">
+			
 		</div>
 	</div>
 </div>

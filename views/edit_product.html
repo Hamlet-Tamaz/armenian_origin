@@ -4,7 +4,7 @@
 <div id='editProduct'>
 	<h1>Edit Product</h1>
 
-	<form action="/products/@{model.p_data.id}/edit" method='POST'>
+	<form action="/products/@{model.p_data.id}/edit" method='POST' enctype="multipart/form-data">
 	<table>
 		<tr style="margin-bottom: 10px">
 			<td><label for="name">product name: </label></td>
@@ -37,9 +37,7 @@
 		</tr>
 		<tr>
 			<td><label for="img_url">Img Url:</label></td>
-			<td>
-				<input type="text" name='img_url' value='@{model.p_data.img_url}' placeholder="img_url">
-			</td>
+			<td><input class='btn' name='img_url' value='@{model.img_url}' type="file" accept="file_extension|audio/*|video/*|image/*|media_type" multiple></td>		
 		</tr>
 		<tr>
 			<td><label for="link">External Link:</label></td>

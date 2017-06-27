@@ -1,0 +1,96 @@
+@{title('Something awesome')}
+@{head('/j/product.js')}
+<!-- @{model.message} -->
+
+<div id='productProfile'>
+	<div class="row">
+		<h1>@{model.p_data.id}</h1>
+	</div>
+
+<!-- PRODUCT -->
+
+	<div class='row'>
+		<div class='col-xs-12  col-sm-5'>
+			<h3>Item Name: @{model.p_data.name}</h3>
+			<img class='bioImg img-responsive center-block' src="/u/product_img/@{model.p_data.id}/0.png" alt="">	
+		
+			<div class="productImgs row">
+				@{foreach i in [...Array(model.p_data.img_count).keys()]}
+					<img src="/u/product_img/@{model.p_data.id}/@{i}.png" alt="" onclick='changePic(this.src)'>
+				@{end}
+			</div>
+
+		</div>
+
+		<div class='col-xs-12  col-sm-5 col-sm-offset-1'>
+			<div class="row" id='profileBio'>
+				<p>
+					@{model.p_data.bio}
+					<br>
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit aut exercitationem illo, odio cum soluta a officia eos quae sint blanditiis quod alias labore officiis fugit sapiente sequi, aperiam quis!
+				</p>
+			</div>
+			
+		</div>
+	</div>
+	
+	<br />
+	<hr>	
+
+<!-- CREATOR -->
+
+	<div class='row'>
+		<div class='col-xs-12  col-sm-5'>
+			<h2>By: @{model.c_data.name}</h2>
+			<img class='bioImg' src="/u/producer_img/@{model.c_data.id}/0.png" alt="">	
+		
+			<div class="producerImgs row">
+				@{foreach i in [...Array(model.c_data.img_count).keys()]}
+					<img src="/u/producer_img/@{model.c_data.id}/@{i}.png" alt="" onclick='changePic(this.src)'>
+				@{end}
+			</div>
+
+		</div>
+
+		<div class='col-xs-12  col-sm-5 col-sm-offset-1'>
+			<div class="row" id='profileBio'>
+				<p>
+					@{model.p_data.bio}
+					<br>
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit aut exercitationem illo, odio cum soluta a officia eos quae sint blanditiis quod alias labore officiis fugit sapiente sequi, aperiam quis!
+				</p>
+			</div>
+			
+		</div>
+	</div>
+	
+	<br />
+	<hr>	
+
+<!-- OTHER BY CREATOR -->
+
+	<div class="row products container-fluid center" >			
+		<h2>Here are some of @{model.p_data.name}'s items...</h2>
+		@{if model.p_data.producer_id}
+			@{foreach p in model.o_data}
+				<div class='col-xs-3'>
+					<img src="/i/img_temp_bird.png" alt="">
+					<div class="row">
+						<h3 class='col-xs-1'>@{p.id}</h3>
+						<p class='col-xs-10'>@{p.description}:  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae harum sunt blanditiis veritatis, quaerat laborum voluptate labore ducimus, accusamus iste a laboriosam modi! Laudantium animi deleniti pariatur adipisci fuga ab.</p>
+						
+					</div>
+					
+					<div class="row productsPrice" >
+						<h3>$@{p.price}</h3>
+					</div>
+
+				</div>
+			@{end}
+		@{else}
+			<p class='errorMsg'>@{model.message}</p>
+		@{fi}
+		<!-- @{if !model.success} -->
+	</div>
+
+</div>

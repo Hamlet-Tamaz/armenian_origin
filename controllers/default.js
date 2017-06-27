@@ -378,8 +378,9 @@ function view_producer() {
 		message: 'Sorry, an unkown error has occurred'
 	}
 
+
 	DB('ao', function(err, client, done) {
-		client.query('SELECT p.id AS id, p.name AS name, p.producer_id, p.description, p.price, c.id AS c_id, c.name AS c_name, c.img_count AS c_img_count, c.bio FROM products p FULL OUTER JOIN producers c ON p.producer_id = c.id WHERE c.id =' + pid +'ORDER BY p.id', function(err, result) {
+		client.query('SELECT p.id AS id, p.name AS name, p.producer_id, p.description, p.price, c.id AS c_id, c.name AS c_name, c.img_count AS c_img_count, c.bio FROM products AS p FULL OUTER JOIN producers AS c ON p.producer_id = c.id WHERE c.id =' + pid +'ORDER BY p.id', function(err, result) {
 				done();
 
 console.log('here: ', result.rows[0].id)
@@ -407,19 +408,8 @@ console.log('here: ', result.rows[0].id)
 
 function edit_producer() {
 	var self = this,
-	 id = self.req.path[1],
-	 imgs = self.files || '';
+	 id = self.req.path[1];
 
-
-	imgs.forEach(function(el, i) {
-		// var oldPath = 'public/u/producer_img/temp/' + i;
-		var newPath = 'public/u/producer_img/' + id + '/' + i + '.png';
-
-		fs.rename(el.path, newPath, function(err) {
-			if (err) return console.error(err)
-			console.log('file uploaded!')
-		})			
-	})
 
 
 	DB('ao', function(err, client, done) {
@@ -438,12 +428,58 @@ function edit_producer() {
 }
 
 function post_edit_producer() {
-var self = this,
-	 id = self.req.path[1],
-	 formData = self.body;
+	var self = this,
+		id = self.req.path[1],
+		formData = self.body,
+		imgs = self.files || '',
+		dir = 'public/u/producer_img/'+id;
+	
+	// fs.stat(dir, function(err, stats) {
+ //      	eval(locus)
+ //    //Check if error defined and the error code is "not exists"
+ //    if (err && err.errno === 34) {
+ //      //Create the dir, call the callback.
+ //      fs.mkdir(dir, function(err) {
+	// 			imgs.forEach(function(el, i) {
+	// 				// var oldPath = 'public/u/producer_img/temp/' + i;
+	// 				var newPath = 'public/u/producer_img/' + id + '/' + i + '.png';
+
+	// 				fs.rename(el.path, newPath, function(err) {
+	// 					if (err) return console.error(err)
+	// 					console.log('file uploaded!')
+	// 				})			
+	// 			})
+ //      });
+	// 	}
+	// 	else {
+	// 		eval(locus)
+	// 		imgs.forEach(function(el, i) {
+	// 			// var oldPath = 'public/u/producer_img/temp/' + i;
+	// 			var newPath = 'public/u/producer_img/' + id + '/' + i + '.png';
+
+	// 			fs.rename(el.path, newPath, function(err) {
+	// 				if (err) return console.error(err)
+	// 				console.log('file uploaded!')
+	// 			})			
+	// 		})
+	// 	}
+	// })
+	console.log('-----', fs.stat(dir))
+	
+	fs.mkdir(dir, function(err) {
+		imgs.forEach(function(el, i) {
+			// var oldPath = 'public/u/producer_img/temp/' + i;
+			var newPath = 'public/u/producer_img/' + id + '/' + i + '.png';
+
+			fs.rename(el.path, newPath, function(err) {
+				if (err) return console.error(err)
+				console.log('file uploaded!')
+			})			
+		})
+	})
 
 	DB('ao', function(err, client, done) {
-		client.query('UPDATE producers SET name=$1, bio=$2 WHERE id=' + id, [formData.name, formData.bio],function(err, result) {
+		client.query('UPDATE producers SET name=$1, company_name=$2, bio=$3, goal=$4, f_artists=$5, zodiac=$6, f_color=$7, f_movie=$8, f_book=$9, f_season=$10, f_music=$11, img_count=$12 WHERE id=' + id, [formData.name, formData.company, formData.bio, formData.goal, formData.f_artists, formData.zodiac, formData.f_color, formData.f_movie, formData.f_book, formData.f_season, formData.f_music, imgs.length],function(err, result) {
 			done();
 			
 			if (err != null) {
@@ -553,6 +589,8 @@ function view_product() {
 // eval(locus)
 				client.query("SELECT * FROM producers WHERE id=" + pid, function(err, result) {
 					// done();
+
+					console.log('result: ', pid, result.rows)
 					if(err != null) {
 						self.throw500(err);
 						return;
@@ -574,7 +612,7 @@ function view_product() {
 
 								// console.log('producer search: ', result.rows)
 								console.log('response: ', response)
-								self.view('product', response)								
+								self.view('product2', response)								
 							}
 						})					
 					}
@@ -646,7 +684,7 @@ function post_products() {
 	})
 //	INSERT PRODUCT
 	DB('ao', function(err,client, done) {
-		client.query('INSERT INTO products (name, producer_id, description, price, external_link, notes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [formData.name, +formData.producer, formData.description, +formData.price, formData.external_link, formData.notes], function(err,result) {
+		client.query('INSERT INTO products (name, producer_id, description, price, external_link, notes, img_count) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [formData.name, +formData.producer, formData.description, +formData.price, formData.external_link, formData.notes, imgs.length], function(err,result) {
 
 
 console.log('typeof: ', typeof(formData.name), typeof(+formData.producer), typeof(formData.description), typeof(+formData.price), typeof(formData.external_link), typeof(formData.notes))
@@ -713,7 +751,7 @@ console.log('formData: ', formData )
 						return;
 					}
 					else {
-						self.json(model, true);
+						self.json(model,{'Content-Type':'application/json'}, true);
 					}
 				})
 			}
@@ -762,10 +800,25 @@ function edit_product() {
 function post_edit_product()  {
 	var self = this,
 	formData = self.body,
-	id = self.req.path[1];
+	id = self.req.path[1],
+	imgs = self.files || [],
+	dir = 'public/u/product_img/'+id;
+	
+// eval(locus)
+console.log('imgs: ', imgs.length, imgs)
+	
+	fs.mkdir(dir, function(err) {
+		imgs.forEach(function(el, i) {
+			var newPath = 'public/u/product_img/'+ id + '/' +i +'.png';;
+			fs.rename(el.path, newPath, function(err) {
+				if (err) return console.error(err)
+				console.log('file uploaded!')
+			})
+		})
+	})
 	
 	DB('ao', function(err, client, done) {
-		client.query('UPDATE products SET name=$1, price=$2, description=$3, img_url=$4, external_link=$5, notes=$6 WHERE id=' + id, [formData.name, formData.price, formData.description, formData.img_url, formData.external_link, formData.notes], function(err, result) {
+		client.query('UPDATE products SET name=$1, price=$2, description=$3, img_count=$4, external_link=$5, notes=$6 WHERE id=' + id, [formData.name, formData.price, formData.description, imgs.length, formData.external_link, formData.notes], function(err, result) {
 			done();
 
 			if (err != null) {

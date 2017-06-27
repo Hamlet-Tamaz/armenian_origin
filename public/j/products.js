@@ -34,7 +34,10 @@ $(document).ready(function() {
 	// });
 
 
-	$('#trial').click(function(e) {
+	$('form#postProductForm').submit(function(e) {
+
+		debugger
+				// e.preventDefault();
 
 		var $form = $('#postProductForm');
 		var $inputs = $('#postProductForm :input');
@@ -70,8 +73,13 @@ $(document).ready(function() {
 		// else if(!vals.description) showError('Please provide a description for your product.');
 		else {
 			
+			$.ajax({
+				type: "POST",
+				url: '/products',
+				data: vals,
 
-			$.post('/products', vals, function(result) {	
+			}).done(function(result){
+			// $.post('/products', vals, function(result) {	
 			
 debugger
 
@@ -139,7 +147,7 @@ debugger
 					)
 				}
 			}, 'json')
-		}
+		}	
 	})
 	
 });

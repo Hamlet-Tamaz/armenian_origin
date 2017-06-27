@@ -67,23 +67,25 @@ nav .navbar-left {
 	width: 50%;
 	min-width: 200px;
 }
-.producerImgs {
+.producerImgs, .productImgs {
 	margin-top: 10px;
 	overflow-x: auto;
 	white-space: nowrap;
 	margin: 10px 0 0 10px;
 }
-.producerImgs > img {
+.producerImgs > img, .productImgs > img {
 	max-height: 100px;
 	margin-left: 5px;
 	padding-left: 3px;
 }
-#bioImg {
+.bioImg {
 	border-radius: 10px;
 
 	min-height: 200px;
 	min-width: 200px;
-	max-width: 60%
+	max-width: 60%;
+
+	max-height: 300px;
 }
 
 
@@ -107,13 +109,13 @@ nav .navbar-left {
 	margin: 5px;
 }
 .products {
-	width: 80%;
+	/*width: 80%;*/
 	margin: 0 auto;
 }
 .products > div{
 	/*margin: 8px;*/
 	border: solid white 20px;
-	min-width: 380px;
+	min-width: 340px;
 }
 
 .products h3 {
